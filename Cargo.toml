@@ -1,6 +1,17 @@
+
 [package]
 name = "uranus"
+description = "A simple proc-macro crate with functionality to obtain the readme or license text of a package."
+authors = ["Ada F. <https://github.com/ErisianArchitect>"]
+repository = "https://github.com/ErisianArchitect/uranus"
+docs = "https://docs.rs/uranus"
 version = "0.1.0"
 edition = "2024"
 
+[lib]
+proc-macro = true
+
 [dependencies]
+syn = "2.0.117"
+quote = "1.0.45"
+proc-macro2 = "1.0.106"
