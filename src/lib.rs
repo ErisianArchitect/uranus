@@ -1,3 +1,4 @@
+mod fmt;
 mod version;
 
 use std::{path::PathBuf};
