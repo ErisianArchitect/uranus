@@ -4,6 +4,9 @@ use std::{path::PathBuf};
 
 use proc_macro::TokenStream;
 use quote::quote;
+use syn::{
+    spanned::Spanned,
+};
 
 use version::*;
 
@@ -35,10 +38,7 @@ macro_rules! get_var {
     };
 }
 
-#[proc_macro]
-pub fn readme_text(input: TokenStream) -> TokenStream {
-    expect_empty_input(&input);
-    
+fn get_readme_text() -> String {
     get_var!(readme_path = CARGO_PKG_README);
     get_var!(manifest_dir = CARGO_MANIFEST_DIR);
     
@@ -53,7 +53,16 @@ pub fn readme_text(input: TokenStream) -> TokenStream {
         panic!("Failed to read README file to string.");
     };
     
+    readme_text
+}
+
+#[proc_macro]
+pub fn readme_text(input: TokenStream) -> TokenStream {
+    expect_empty_input(&input);
+    
+    let readme_text = get_readme_text();
     let readme_text = readme_text.trim_end();
+    
     quote!( #readme_text ).into()
 }
 
