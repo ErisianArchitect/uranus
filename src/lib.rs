@@ -6,6 +6,7 @@ use std::{path::PathBuf};
 use proc_macro::TokenStream;
 use quote::quote;
 
+use syn::parse_macro_input;
 use version::*;
 
 #[track_caller]
@@ -155,7 +156,52 @@ single_var_macros!(
     bin_name => CARGO_BINE_NAME,
 );
 
-// #[proc_macro]
-// pub fn package_version(input: TokenStream) -> TokenStream {
-//     todo!()
-// }
+/// Get package version information.
+/// 
+/// # Inputs:
+/// - `package_version!(full)`
+///   Get the full version info: `1.2.3-prerelease+build`
+/// - `package_version!(id)`
+///   Get the package ID spec: `package@1.2.3-prerelease+build`
+/// - `package_version!(major)`
+///   Get the version's major value as a string.
+/// - `package_version!(major, int)`
+///   Get the version's major value as an integer.
+/// - `package_version!(minor)`
+///   Get the version's minor value as a string.
+/// - `package_version!(minor, int)`
+///   Get the version's, minor value as an integer.
+/// - `package_version!(patch)`
+///   Get the version's patch value as a string.
+/// - `package_version!(patch, int)`
+///   Get the version's patch value as an integer.
+/// - `package_version!(prerelease)` or `package_version!(pre)`
+///   Get the version's prerelease value as a string.
+/// 
+/// # String Format
+/// `package_version` also has the option to use a format literal.
+/// ```rust, ignore
+/// use uranus::package_version;
+/// 
+/// pub const VERSION_INFO: &'static str = package_version!("Package: {package}\nVersion: {full}\nPrerelease: {prerelease}")
+/// ```
+/// # String Format Interpolations
+/// - `package`
+///   The package name.
+/// - `full`
+///   The full version string.
+/// - `id`
+///   The package ID spec.
+/// - `major`
+///   The major version value.
+/// - `minor`
+///   The minor version value.
+/// - `patch`
+///   The patch version value.
+/// - `prerelease` or `pre`
+///   The prerelease version value.
+#[proc_macro]
+pub fn package_version(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as VersionInput);
+    quote!( #input ).into()
+}
