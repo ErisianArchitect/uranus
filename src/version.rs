@@ -137,7 +137,7 @@ fn get_version_patch() -> String {
     get_var!(CARGO_PKG_VERSION_PATCH)
 }
 
-fn get_version_patch_int() -> u32 {
+fn get_version_patch_int() -> u64 {
     get_version_patch().parse().expect("Failed to parse patch int.")
 }
 
@@ -145,7 +145,7 @@ fn get_version_minor() -> String {
     get_var!(CARGO_PKG_VERSION_MINOR)
 }
 
-fn get_version_minor_int() -> u32 {
+fn get_version_minor_int() -> u64 {
     get_version_minor().parse().expect("Failed to parse minor int.")
 }
 
@@ -153,7 +153,7 @@ fn get_version_major() -> String {
     get_var!(CARGO_PKG_VERSION_MAJOR)
 }
 
-fn get_version_major_int() -> u32 {
+fn get_version_major_int() -> u64 {
     get_version_major().parse().expect("Failed to parse major int.")
 }
 
