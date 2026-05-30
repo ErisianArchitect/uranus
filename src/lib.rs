@@ -4,9 +4,6 @@ use std::{path::PathBuf};
 
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{
-    spanned::Spanned,
-};
 
 use version::*;
 
@@ -56,6 +53,23 @@ fn get_readme_text() -> String {
     readme_text
 }
 
+fn get_license_text() -> String {
+    get_var!(license_path = CARGO_PKG_LICENSE_FILE);
+    get_var!(manifest_dir = CARGO_MANIFEST_DIR);
+    let manifest_dir = PathBuf::from(manifest_dir);
+    let license_path = manifest_dir.join(license_path);
+    
+    if !license_path.is_file() {
+        panic!("License file was not found: \"{}\"", license_path.display());
+    }
+    
+    let Ok(license_text) = std::fs::read_to_string(license_path) else {
+        panic!("Failed to read license file to string.");
+    };
+    
+    license_text
+}
+
 #[proc_macro]
 pub fn readme_text(input: TokenStream) -> TokenStream {
     expect_empty_input(&input);
@@ -70,20 +84,9 @@ pub fn readme_text(input: TokenStream) -> TokenStream {
 pub fn license_text(input: TokenStream) -> TokenStream {
     expect_empty_input(&input);
 
-    get_var!(license_path = CARGO_PKG_LICENSE_FILE);
-    get_var!(manifest_dir = CARGO_MANIFEST_DIR);
-    let manifest_dir = PathBuf::from(manifest_dir);
-    let license_path = manifest_dir.join(license_path);
-    
-    if !license_path.is_file() {
-        panic!("License file was not found: \"{}\"", license_path.display());
-    }
-    
-    let Ok(license_text) = std::fs::read_to_string(license_path) else {
-        panic!("Failed to read license file to string.");
-    };
-    
+    let license_text = get_license_text();
     let license_text = license_text.trim_end();
+    
     quote!( #license_text ).into()
 }
 
